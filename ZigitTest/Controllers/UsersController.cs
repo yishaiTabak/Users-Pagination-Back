@@ -65,7 +65,6 @@ namespace ZigitTest.Controllers
             }
             catch (Exception ex)
             {
-                // Catch any other unhandled exceptions
                 return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
             }
         }
