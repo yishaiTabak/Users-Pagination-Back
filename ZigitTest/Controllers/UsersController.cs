@@ -16,25 +16,42 @@ namespace ZigitTest.Controllers
         {
             _usersRepository = userRepository;
         }
-        [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] int skip, [FromQuery] int take)
+        //[HttpGet]
+        //public async Task<IActionResult> Get([FromQuery] int skip, [FromQuery] int take)
+        //{
+        //    try
+        //    {
+        //        if(skip<0 || take <= 0)
+        //        {
+        //            return BadRequest("invalid filters");
+        //        }
+        //        List<UserModel> users = await _usersRepository.getUsers(skip, take);
+        //        return Ok(users);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Catch any other unhandled exceptions
+        //        return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+        //    }
+        //}
+
+        [HttpPost("get-filtered-users")]
+        public async Task<IActionResult> Get([FromBody] UserFilterRequest filters)
         {
             try
             {
-                if(skip<0 || take <= 0)
+                FilteredUsersResponse response = await _usersRepository.GetFilteredUsers(filters);
+                if (response == null || response.TotalCount == 0)
                 {
-                    return BadRequest("invalid filters");
+                    return NotFound();
                 }
-                List<UserModel> users = await _usersRepository.getUsers(skip, take);
-                return Ok(users);
+                return Ok(response);
             }
             catch (Exception ex)
             {
-                // Catch any other unhandled exceptions
                 return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
             }
         }
-
         [HttpGet("user-count")]
         public async Task<IActionResult> GetUsersCount()
         {
@@ -45,7 +62,6 @@ namespace ZigitTest.Controllers
             }
             catch (Exception ex)
             {
-                // Catch any other unhandled exceptions
                 return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
             }
         }

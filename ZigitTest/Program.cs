@@ -1,5 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 using ZigitTest.Data;
 using ZigitTest.Repositories;
 
@@ -17,9 +18,14 @@ namespace ZigitTest
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                });
 
-            builder.Services.AddTransient<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IEmailRepository, EmailRepository>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
